@@ -5,6 +5,8 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import './less/login.less'
 import logo from '../../assets/img/logo.png'
 
+import { reqLogin } from '../../api/login'
+
 export default class Login extends Component {
   // 表单默认值
   initialValues = {
@@ -13,8 +15,9 @@ export default class Login extends Component {
   }
 
   // 验证通过提交表单
-  handleFinish = ({ username, password }) => {
-    console.log(username, password)
+  handleFinish = async data => {
+    const result = await reqLogin(data)
+    console.log(result)
   }
 
   // 用户名验证规则
