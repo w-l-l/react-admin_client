@@ -3,9 +3,9 @@ import { Form, Input, Button } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 
 import './less/login.less'
-import logo from '../../assets/img/logo.png'
+import logo from '@assets/img/logo.png'
 
-import { reqLogin } from '../../api/login'
+import { reqLogin } from '@api/login'
 
 export default class Login extends Component {
   // 表单默认值
