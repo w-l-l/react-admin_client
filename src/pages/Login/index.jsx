@@ -1,23 +1,30 @@
 import React, { Component } from 'react'
-import { Form, Input, Button } from 'antd'
+import { Redirect } from 'react-router-dom'
+import { Form, Input, Button, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 
 import './less/login.less'
 import logo from '@assets/img/logo.png'
 
 import { reqLogin } from '@api/login'
+import { saveUser } from '@utils/localStorage'
+import memory from '@utils/memory'
 
 export default class Login extends Component {
   // 表单默认值
   initialValues = {
     username: 'admin',
-    password: '123456'
+    password: 'admin'
   }
 
   // 验证通过提交表单
-  handleFinish = async data => {
-    const result = await reqLogin(data)
-    console.log(result)
+  handleFinish = async params => {
+    const { status, data } = await reqLogin(params)
+    if (status !== 0) return
+    message.success('登录成功')
+    saveUser(data)
+    // 登录成功跳转登录页
+    this.props.history.replace('/')
   }
 
   // 用户名验证规则
@@ -50,6 +57,8 @@ export default class Login extends Component {
   ]
 
   render () {
+    // 如果用户登录，直接重定向首页
+    if (memory.user) return <Redirect to='/' />
     const {
       handleFinish,
       validateUserName,
@@ -84,11 +93,7 @@ export default class Login extends Component {
               />
             </Form.Item>
             <Form.Item>
-              <Button
-                type='primary'
-                htmlType='submit'
-                className='login-form-button'
-              >
+              <Button type='primary' htmlType='submit' block>
                 登录
               </Button>
             </Form.Item>

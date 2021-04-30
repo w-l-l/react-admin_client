@@ -9,7 +9,11 @@ const service = axios.create({
 
 // 响应拦截器
 service.interceptors.response.use(
-  response => response.data,
+  response => {
+    const { data } = response
+    if (data.status !== 0) message.error(data.msg)
+    return data
+  },
   error => {
     message.error('请求出错了：' + error.message)
     return Promise.reject(error)
