@@ -37,6 +37,7 @@ module.exports = {
           '@api': './api',
           '@assets': './assets',
           '@components': './components',
+          '@config': './config',
           '@utils': './utils',
         }
       }
