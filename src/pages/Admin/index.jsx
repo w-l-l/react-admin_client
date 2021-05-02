@@ -6,6 +6,7 @@ import './less/admin.less'
 
 import memory from '@utils/memory'
 import LeftNav from '@components/LeftNav'
+import Header from '@components/Header'
 import Home from '../Home'
 import Category from '../Goods/Category'
 import Product from '../Goods/Product'
@@ -16,7 +17,7 @@ import Pie from '../Charts/Pie'
 import Line from '../Charts/Line'
 import Order from '../Order'
 
-const { Header, Footer, Sider, Content } = Layout
+const { Footer, Sider, Content } = Layout
 
 export default class Admin extends Component {
   render () {
@@ -28,7 +29,7 @@ export default class Admin extends Component {
           <LeftNav />
         </Sider>
         <Layout>
-          <Header>Header</Header>
+          <Header />
           <Content className='admin-content'>
             <Switch>
               <Redirect exact from='/' to='/home' />
