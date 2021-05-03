@@ -6,7 +6,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import './less/login.less'
 import logo from '@assets/img/logo.png'
 
-import { reqLogin } from '@api/login'
+import { login } from '@api/login'
 import { saveUser } from '@utils/localStorage'
 import memory from '@utils/memory'
 
@@ -19,7 +19,7 @@ export default class Login extends Component {
 
   // 验证通过提交表单
   handleFinish = async params => {
-    const { status, data } = await reqLogin(params)
+    const { status, data } = await login(params)
     if (status !== 0) return
     message.success('登录成功')
     saveUser(data)
