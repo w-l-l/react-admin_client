@@ -1,19 +1,15 @@
 import React, { Component } from 'react'
-import { Card, Button, Table, Modal, message } from 'antd'
+import { Card, Button, Table } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
-import { getCategory, addCategory, updateCategory } from '@api/goods'
+import { getCategory } from '@api/goods'
 
-import AddForm from './AddForm'
-import UpdateForm from './UpdateForm'
+import AddModal from './AddModal'
+import UpdateModal from './UpdateModal'
 
 const { Column } = Table
 
 export default class Category extends Component {
-  // 添加分类表单实例
-  addFormRef = null
-  // 修改分类表单实例
-  updateFormRef = null
   // 当前正在修改的分类
   category = {}
   state = {
@@ -43,37 +39,7 @@ export default class Category extends Component {
     this.showModal(2)
   }
   // 隐藏弹窗
-  cancelModal = () => {
-    this.addFormRef && this.addFormRef.resetFields()
-    this.updateFormRef && this.updateFormRef.resetFields()
-    this.showModal(0)
-  }
-  // 添加分类
-  addCategory = async () => {
-    try {
-      const params = await this.addFormRef.validateFields()
-      const { status } = await addCategory(params)
-      if (status !== 0) return
-      message.success('添加分类成功')
-      this.cancelModal()
-      this.getCategory()
-    } catch (error) {}
-  }
-  // 修改分类
-  updateCategory = async () => {
-    try {
-      const params = await this.updateFormRef.validateFields()
-      const { _id: categoryId } = this.category
-      const { status } = await updateCategory({
-        ...params,
-        categoryId
-      })
-      if (status !== 0) return
-      message.success('修改分类成功')
-      this.cancelModal()
-      this.getCategory()
-    } catch (error) {}
-  }
+  cancelModal = () => this.showModal(0)
   // 表格操作列渲染
   renderTableHanle = data => (
     <>
@@ -87,9 +53,8 @@ export default class Category extends Component {
     const {
       showModal,
       cancelModal,
-      addCategory,
-      updateCategory,
       renderTableHanle,
+      getCategory,
       category
     } = this
     const { categorys, showStatus, parentId } = this.state
@@ -110,29 +75,19 @@ export default class Category extends Component {
           <Column title='分类名称' dataIndex='name'></Column>
           <Column title='操作' render={renderTableHanle} width='300px'></Column>
         </Table>
-        <Modal
-          title='添加分类'
+        <AddModal
           visible={showStatus === 1}
-          onCancel={cancelModal}
-          onOk={addCategory}
-        >
-          <AddForm
-            categorys={categorys}
-            parentId={parentId}
-            getFormRef={form => (this.addFormRef = form)}
-          />
-        </Modal>
-        <Modal
-          title='修改分类'
+          cancelModal={cancelModal}
+          categorys={categorys}
+          parentId={parentId}
+          getCategory={getCategory}
+        />
+        <UpdateModal
           visible={showStatus === 2}
-          onCancel={cancelModal}
-          onOk={updateCategory}
-        >
-          <UpdateForm
-            categoryName={category.name}
-            getFormRef={form => (this.updateFormRef = form)}
-          />
-        </Modal>
+          cancelModal={cancelModal}
+          category={category}
+          getCategory={getCategory}
+        />
       </Card>
     )
   }
