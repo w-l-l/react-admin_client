@@ -6,11 +6,6 @@ const { Option } = Select
 export default class AddForm extends Component {
   // 表单实例
   formRef = React.createRef()
-  // 表单默认值
-  initialValues = {
-    parentId: this.props.parentId,
-    categoryName: ''
-  }
   // 设置选择项
   setSelectOption = () => {
     return this.props.categorys.map(({ _id, name }) => (
@@ -25,23 +20,23 @@ export default class AddForm extends Component {
   validateCategoryName = [
     { required: true, whitespace: true, message: '分类名称必须输入' }
   ]
-  componentDidMount(){
+  componentDidMount () {
     this.props.getFormRef(this.formRef.current)
   }
   render () {
     const {
-      initialValues,
       setSelectOption,
       validateParentId,
       validateCategoryName,
       formRef
     } = this
+    // 表单默认值
+    const initialValues = {
+      parentId: this.props.parentId,
+      categoryName: ''
+    }
     return (
-      <Form
-        layout='vertical'
-        initialValues={initialValues}
-        ref={formRef}
-      >
+      <Form layout='vertical' initialValues={initialValues} ref={formRef}>
         <Form.Item name='parentId' label='所属分类：' rules={validateParentId}>
           <Select placeholder='请选择所属分类'>
             <Option value='0'>一级分类</Option>
