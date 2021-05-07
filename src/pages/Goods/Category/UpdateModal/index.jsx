@@ -43,6 +43,7 @@ export default class UpdateModal extends Component {
         visible={visible}
         onCancel={cancelModal}
         onOk={updateCategory}
+        destroyOnClose
       >
         <Form layout='vertical' initialValues={initialValues} ref={formRef}>
           <Form.Item
