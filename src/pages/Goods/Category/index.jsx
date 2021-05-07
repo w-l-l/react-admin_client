@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Card, Button, Table } from 'antd'
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
-import { getCategory } from '@api/goods'
+import { getCategoryList } from '@api/goods'
 
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -29,7 +29,7 @@ export default class Category extends Component {
       const { parentId } = this.state
       if (categoryId && categoryId !== parentId) return
       this.setState({ loading: true })
-      const { status, data } = await getCategory({ parentId })
+      const { status, data } = await getCategoryList({ parentId })
       if (status !== 0) return
       const key = parentId === '0' ? 'categorys' : 'subCategorys'
       this.setState({ [key]: data, loading: false })
@@ -96,7 +96,7 @@ export default class Category extends Component {
         icon={<PlusOutlined />}
         onClick={() => showModal(1)}
       >
-        添加
+        添加分类
       </Button>
     )
     // 卡片标题
