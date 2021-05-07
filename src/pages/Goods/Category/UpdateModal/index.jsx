@@ -44,6 +44,8 @@ export default class UpdateModal extends Component {
         onCancel={cancelModal}
         onOk={updateCategory}
         destroyOnClose
+        okText='确定'
+        cancelText='取消'
       >
         <Form layout='vertical' initialValues={initialValues} ref={formRef}>
           <Form.Item

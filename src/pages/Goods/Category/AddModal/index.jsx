@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Form, Select, Input,message } from 'antd'
+import { Modal, Form, Select, Input, message } from 'antd'
 
 import { addCategory } from '@api/goods'
 
@@ -35,7 +35,7 @@ export default class AddModal extends Component {
       if (status !== 0) return
       message.success('添加分类成功')
       this.cancelModal()
-      this.props.getCategory()
+      this.props.getCategory(params.parentId)
     } catch (error) {}
   }
   render () {
@@ -59,6 +59,9 @@ export default class AddModal extends Component {
         visible={visible}
         onCancel={cancelModal}
         onOk={addCategory}
+        destroyOnClose
+        okText='确定'
+        cancelText='取消'
       >
         <Form layout='vertical' initialValues={initialValues} ref={formRef}>
           <Form.Item
@@ -66,7 +69,12 @@ export default class AddModal extends Component {
             label='所属分类：'
             rules={validateParentId}
           >
-            <Select placeholder='请选择所属分类'>
+            <Select
+              placeholder='请选择所属分类'
+              allowClear
+              showSearch
+              optionFilterProp='children'
+            >
               <Option value='0'>一级分类</Option>
               {setSelectOption()}
             </Select>
