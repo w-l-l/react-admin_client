@@ -14,3 +14,6 @@ export const getProductList = params => ajax('/manage/product/list', params)
 
 // 搜索商品列表
 export const getProductListBySearch = params => ajax('/manage/product/search', params)
+
+// 更新商品状态(上架/下架)
+export const setProductStatus = params => ajax('/manage/product/updateStatus', params, 'POST')

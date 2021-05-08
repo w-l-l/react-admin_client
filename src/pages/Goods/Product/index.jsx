@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import { Card, Select, Input, Button, Table, Switch } from 'antd'
+import { Card, Select, Input, Button, Table, Switch, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
-import { getProductList, getProductListBySearch } from '@api/goods'
+import {
+  getProductList,
+  getProductListBySearch,
+  setProductStatus
+} from '@api/goods'
 import { PAGE_SIZE } from '@utils/constant'
 
 const { Option } = Select
@@ -20,30 +24,43 @@ export default class Product extends Component {
   }
   // 获取商品列表
   getProductList = async (pageNum = 1) => {
-    this.setState({ loading: true })
-    this.currentPage = pageNum
-    const { searchType, searchName } = this.state
-    const params = {
-      pageNum,
-      pageSize: PAGE_SIZE
+    try {
+      this.setState({ loading: true })
+      this.currentPage = pageNum
+      const { searchType, searchName } = this.state
+      const params = {
+        pageNum,
+        pageSize: PAGE_SIZE
+      }
+      searchName && (params[searchType] = searchName)
+      const { status, data } = await (searchName
+        ? getProductListBySearch(params)
+        : getProductList(params))
+      if (status !== 0) return
+      const { list: productList, total } = data
+      this.setState({ productList, total, loading: false })
+    } catch (error) {
+      message.error('商品列表获取失败')
     }
-    searchName && (params[searchType] = searchName)
-    const { status, data } = await (searchName
-      ? getProductListBySearch(params)
-      : getProductList(params))
-    if (status !== 0) return
-    const { list: productList, total } = data
-    this.setState({ productList, total, loading: false })
+  }
+  // 更新商品状态
+  setProductStatus = async (productId, status) => {
+    status = status === 1 ? 2 : 1
+    const { status: state } = await setProductStatus({ productId, status })
+    if (state !== 0) return
+    message.success('商品状态更新成功')
+    this.getProductList(this.currentPage)
   }
   componentDidMount () {
     this.getProductList()
   }
   // 表格状态上下架render
-  tableStatusRender = ({ status }) => (
+  tableStatusRender = ({ _id, status }) => (
     <Switch
       checkedChildren='上架'
       unCheckedChildren='下架'
       checked={status === 1}
+      onChange={() => this.setProductStatus(_id, status)}
     />
   )
   // 表格操作render

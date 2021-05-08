@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Button, Table } from 'antd'
+import { Card, Button, Table, message } from 'antd'
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
 import { getCategoryList } from '@api/goods'
@@ -33,7 +33,9 @@ export default class Category extends Component {
       if (status !== 0) return
       const key = parentId === '0' ? 'categorys' : 'subCategorys'
       this.setState({ [key]: data, loading: false })
-    } catch (error) {}
+    } catch (error) {
+      message.error('分类列表获取失败')
+    }
   }
   // 查看子分类
   getSubCategory = ({ _id, name }) => {
