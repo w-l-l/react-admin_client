@@ -17,3 +17,6 @@ export const getProductListBySearch = params => ajax('/manage/product/search', p
 
 // 更新商品状态(上架/下架)
 export const setProductStatus = params => ajax('/manage/product/updateStatus', params, 'POST')
+
+// 获取一个分类
+export const getCategoryInfo = params => ajax('/manage/category/info', params)
