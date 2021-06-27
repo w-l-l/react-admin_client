@@ -26,7 +26,7 @@ class LeftNav extends Component {
     return menu.map(({ title, key, icon, children }) => {
       if (children) {
         // 获取需要展开的 SubMenu 菜单项 key 数组
-        const isOpenKey = children.some(item => item.key === pathname)
+        const isOpenKey = children.some(item => !pathname.indexOf(item.key))
         isOpenKey && (this.defaultOpenKeys = [key])
         return (
           <SubMenu key={key} icon={icon} title={title}>
@@ -46,7 +46,8 @@ class LeftNav extends Component {
     const { defaultOpenKeys, menuList } = this
 
     // 获取当前路径
-    const { pathname } = this.props.location
+    let { pathname } = this.props.location
+    if (!pathname.indexOf('/goods/product')) pathname = '/goods/product'
 
     // 获取需要展开的 SubMenu 菜单项 key 数组
     // const defaultOpenKeys = /^(\/.+)\/.+$/.test(pathname) ? [RegExp.$1] : []
