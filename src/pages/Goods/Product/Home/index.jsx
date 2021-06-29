@@ -74,7 +74,12 @@ export default class Home extends Component {
         >
           详情
         </Button>
-        <Button type='link'>修改</Button>
+        <Button
+          type='link'
+          onClick={() => push('/goods/product/update', { product })}
+        >
+          修改
+        </Button>
       </>
     )
   }
@@ -111,7 +116,11 @@ export default class Home extends Component {
     )
     // 卡片右侧
     const extra = (
-      <Button type='primary' icon={<PlusOutlined />}>
+      <Button
+        type='primary'
+        icon={<PlusOutlined />}
+        onClick={() => this.props.history.push('/goods/product/add')}
+      >
         添加商品
       </Button>
     )

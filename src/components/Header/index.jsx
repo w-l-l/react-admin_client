@@ -22,14 +22,14 @@ class Header extends Component {
     clearInterval(this.timer)
   }
   // 获取菜单标题
-  getTiele = () => {
+  getTitle = () => {
     const { pathname } = this.props.location
     let title = ''
     menuList.forEach(item => {
       if (item.key === pathname) title = item.title
       const { children } = item
       if (children) {
-        const info = children.find(item => item.key === pathname)
+        const info = children.find(item => !pathname.indexOf(item.key))
         info && (title = info.title)
       }
     })
@@ -66,7 +66,7 @@ class Header extends Component {
           </Button>
         </div>
         <div className='header-bottom'>
-          <div className='header-bottom-left'>{this.getTiele()}</div>
+          <div className='header-bottom-left'>{this.getTitle()}</div>
           <div className='header-bottom-right'>
             <span>{currentTime}</span>
             <a
