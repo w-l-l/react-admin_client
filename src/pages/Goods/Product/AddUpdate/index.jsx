@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { Card, Form, Input, Button } from 'antd'
+import { Card, Form, Input, Button, Cascader } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
+
+import { getCategoryList } from '@api/goods'
 
 const { Item } = Form
 const { TextArea } = Input
@@ -10,20 +12,76 @@ export default class AddUpdate extends Component {
   isUpdate = true
   // 商品信息
   product = {}
+  state = {
+    options: []
+  }
   constructor (props) {
     super(props)
     const product = this.props.location.state
     this.isUpdate = !!product
     this.product = product || {}
   }
+  componentDidMount () {
+    this.getCategorys('0')
+  }
+  // 获取分类
+  getCategorys = async parentId => {
+    const { status, data } = await getCategoryList({ parentId })
+    if (status !== 0) return
+    if (parentId === '0') {
+      this.initOptions(data)
+    } else {
+      return data
+    }
+  }
+  // 设置分类数据option
+  setCategorys = (categorys, isLeaf = false) =>
+    categorys.map(({ _id: value, name: label }) => ({
+      value,
+      label,
+      isLeaf
+    }))
+  // 初始化级联选择框配置
+  initOptions = async categorys => {
+    const {
+      isUpdate,
+      product: { pCategoryId },
+      getCategorys,
+      setCategorys
+    } = this
+    const options = setCategorys(categorys)
+    if (isUpdate && pCategoryId !== '0') {
+      const data = await getCategorys(pCategoryId)
+      const childOptions = setCategorys(data)
+      const targetOption = options.find(item => item.value === pCategoryId)
+      targetOption.children = childOptions
+    }
+    this.setState({ options })
+  }
   // 商品价格验证规则
-  validatorPrice = (_, price) => price * 1 > 0 ? Promise.resolve() : Promise.reject('商品价格必须大于0')
+  validatorPrice = (_, price) =>
+    price * 1 > 0 ? Promise.resolve() : Promise.reject('商品价格必须大于0')
+  // 动态获取分类数据
+  loadData = async ([option]) => {
+    option.loading = true
+    const { getCategorys, setCategorys } = this
+    const data = await getCategorys(option.value)
+    option.loading = false
+    if (data && data.length > 0) {
+      option.children = setCategorys(data, true)
+    } else {
+      option.isLeaf = true
+    }
+    const { options } = this.state
+    this.setState({ options })
+  }
   // 提交表单
   submit = params => {
     console.log(params)
   }
   render () {
-    const { isUpdate, submit, validatorPrice } = this
+    const { isUpdate, submit, validatorPrice, loadData } = this
+    const { options } = this.state
     // 头部左侧
     const title = (
       <span>
@@ -40,14 +98,18 @@ export default class AddUpdate extends Component {
           <Item
             label='商品名称'
             name='name'
-            rules={[{ required: true, message: '必须输入商品名称', whitespace: true }]}
+            rules={[
+              { required: true, message: '必须输入商品名称', whitespace: true }
+            ]}
           >
             <Input placeholder='请输入商品名称' autoComplete='off' />
           </Item>
           <Item
             label='商品描述'
             name='desc'
-            rules={[{ required: true, message: '必须输入商品描述', whitespace: true }]}
+            rules={[
+              { required: true, message: '必须输入商品描述', whitespace: true }
+            ]}
           >
             <TextArea
               placeholder='请输入商品描述'
@@ -66,6 +128,17 @@ export default class AddUpdate extends Component {
               placeholder='请输入商品价格'
               addonAfter='元'
               autoComplete='off'
+            />
+          </Item>
+          <Item
+            label='商品分类'
+            name='categoryIds'
+            rules={[{ required: true, message: '必须指定商品分类' }]}
+          >
+            <Cascader
+              options={options}
+              loadData={loadData}
+              placeholder='请指定商品分类'
             />
           </Item>
           <Item>
