@@ -1,8 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { Card, Form, Input, Button, Cascader } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
 import { getCategoryList } from '@api/goods'
+
+import UploadImg from '@components/UploadImg'
 
 const { Item } = Form
 const { TextArea } = Input
@@ -12,6 +14,8 @@ export default class AddUpdate extends Component {
   isUpdate = true
   // 商品信息
   product = {}
+  // 商品图片ref
+  imgRef = null
   state = {
     options: []
   }
@@ -20,6 +24,7 @@ export default class AddUpdate extends Component {
     const product = this.props.location.state
     this.isUpdate = !!product
     this.product = product || {}
+    this.imgRef = createRef()
   }
   componentDidMount () {
     this.getCategorys('0')
@@ -77,10 +82,11 @@ export default class AddUpdate extends Component {
   }
   // 提交表单
   submit = params => {
-    console.log(params)
+    const imgs = this.imgRef.current.getImgs()
+    console.log(params, imgs)
   }
   render () {
-    const { isUpdate, submit, validatorPrice, loadData } = this
+    const { isUpdate, submit, validatorPrice, loadData, imgRef } = this
     const { options } = this.state
     // 头部左侧
     const title = (
@@ -94,7 +100,7 @@ export default class AddUpdate extends Component {
     )
     return (
       <Card title={title}>
-        <Form wrapperCol={{ span: 8 }} onFinish={submit}>
+        <Form labelCol={{ span: 2 }} wrapperCol={{ span: 8 }} onFinish={submit}>
           <Item
             label='商品名称'
             name='name'
@@ -140,6 +146,9 @@ export default class AddUpdate extends Component {
               loadData={loadData}
               placeholder='请指定商品分类'
             />
+          </Item>
+          <Item label='商品图片'>
+            <UploadImg ref={imgRef} />
           </Item>
           <Item>
             <Button type='primary' htmlType='submit'>

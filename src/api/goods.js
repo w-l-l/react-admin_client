@@ -20,3 +20,6 @@ export const setProductStatus = params => ajax('/manage/product/updateStatus', p
 
 // 获取一个分类
 export const getCategoryInfo = params => ajax('/manage/category/info', params)
+
+// 删除指定名称的图片
+export const deleteImg = params => ajax('/manage/img/delete', params, 'POST')
