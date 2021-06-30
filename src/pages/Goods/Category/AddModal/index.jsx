@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Modal, Form, Select, Input, message } from 'antd'
 
 import { addCategory } from '@api/goods'
@@ -6,6 +7,13 @@ import { addCategory } from '@api/goods'
 const { Option } = Select
 
 export default class AddModal extends Component {
+  static propTypes = {
+    visible: PropTypes.bool.isRequired,
+    cancelModal: PropTypes.func.isRequired,
+    categorys: PropTypes.array.isRequired,
+    parentId: PropTypes.string.isRequired,
+    getCategory: PropTypes.func.isRequired
+  }
   // 表单实例
   formRef = React.createRef()
   // 设置选择项

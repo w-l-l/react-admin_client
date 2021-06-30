@@ -1,9 +1,16 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Modal, Form, Input, message } from 'antd'
 
 import { updateCategory } from '@api/goods'
 
 export default class UpdateModal extends Component {
+  static propTypes = {
+    visible: PropTypes.bool.isRequired,
+    cancelModal: PropTypes.func.isRequired,
+    category: PropTypes.object.isRequired,
+    getCategory: PropTypes.func.isRequired
+  }
   // 表单实例
   formRef = React.createRef()
   // 验证分类名称是否输入
