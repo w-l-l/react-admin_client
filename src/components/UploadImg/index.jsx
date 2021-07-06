@@ -4,7 +4,7 @@ import { Upload, Modal, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { deleteImg } from '@api/goods'
-import { BASE_IMG_URL } from '../../utils/constant'
+import { BASE_IMG_URL } from '@utils/constant'
 
 export default class UploadImg extends Component {
   static propTypes = {

@@ -5,6 +5,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 import { getCategoryList } from '@api/goods'
 
 import UploadImg from '@components/UploadImg'
+import RichTextEditor from '@components/RichTextEditor'
 
 const { Item } = Form
 const { TextArea } = Input
@@ -16,6 +17,8 @@ export default class AddUpdate extends Component {
   product = {}
   // 商品图片ref
   imgRef = null
+  // 富文本ref
+  editorRef = null
   state = {
     options: []
   }
@@ -25,6 +28,7 @@ export default class AddUpdate extends Component {
     this.isUpdate = !!product
     this.product = product || {}
     this.imgRef = createRef()
+    this.editorRef = createRef()
   }
   componentDidMount () {
     this.getCategorys('0')
@@ -82,11 +86,13 @@ export default class AddUpdate extends Component {
   }
   // 提交表单
   submit = params => {
-    const imgs = this.imgRef.current.getImgs()
-    console.log(params, imgs)
+    const { imgRef, editorRef } = this
+    const imgs = imgRef.current.getImgs()
+    const detail = editorRef.current.getDetail()
+    console.log(params, imgs, detail)
   }
   render () {
-    const { isUpdate, submit, validatorPrice, loadData, imgRef } = this
+    const { isUpdate, submit, validatorPrice, loadData, imgRef, editorRef } = this
     const { options } = this.state
     // 头部左侧
     const title = (
@@ -149,6 +155,9 @@ export default class AddUpdate extends Component {
           </Item>
           <Item label='商品图片'>
             <UploadImg ref={imgRef} />
+          </Item>
+          <Item label='商品详情' wrapperCol={{span: 20}}>
+            <RichTextEditor ref={editorRef} />
           </Item>
           <Item>
             <Button type='primary' htmlType='submit'>
