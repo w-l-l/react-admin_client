@@ -157,7 +157,7 @@ export default class AddUpdate extends Component {
             <UploadImg ref={imgRef} />
           </Item>
           <Item label='商品详情' wrapperCol={{span: 20}}>
-            <RichTextEditor ref={editorRef} />
+            <RichTextEditor ref={editorRef} detail={'<h1>详情</h1>'} />
           </Item>
           <Item>
             <Button type='primary' htmlType='submit'>

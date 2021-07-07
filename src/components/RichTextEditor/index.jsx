@@ -1,12 +1,26 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Editor } from 'react-draft-wysiwyg'
-import { EditorState, convertToRaw } from 'draft-js'
+import { EditorState, convertToRaw, ContentState } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
+import htmlToDraft from 'html-to-draftjs'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 
 export default class RichTextEditor extends Component {
+  static propTypes = {
+    detail: PropTypes.string
+  }
   state = {
     editorState: EditorState.createEmpty() // 创建一个没有内容的空对象
+  }
+  constructor(props) {
+    super(props)
+    const { detail } = this.props
+    if(!detail) return
+    const contentBlock = htmlToDraft(detail)
+    const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks)
+    const editorState = EditorState.createWithContent(contentState)
+    this.state = { editorState }
   }
   // 实时输入的回调
   onEditorStateChange = editorState => {
