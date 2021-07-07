@@ -15,7 +15,7 @@ export default class Detail extends Component {
     childCategoryName: '' // 二级分类名称
   }
   componentDidMount () {
-    // this.getCategoryName()
+    this.getCategoryName()
   }
   // 获取当前分类名称
   getCategoryName = async () => {

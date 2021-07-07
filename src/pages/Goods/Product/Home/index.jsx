@@ -132,21 +132,10 @@ export default class Home extends Component {
       showQuickJumper: true,
       onChange: getProductList
     }
-    const mockData = [
-      { _id: 0, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 },
-      { _id: 1, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 },
-      { _id: 2, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 },
-      { _id: 3, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 },
-      { _id: 4, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 },
-      { _id: 5, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 },
-      { _id: 6, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 },
-      { _id: 7, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 },
-      { _id: 8, name: '衣服', desc: '横收保护费巴克斯', price: 100, status: 1 }
-    ]
     return (
       <Card title={title} extra={extra}>
         <Table
-          dataSource={mockData || productList}
+          dataSource={productList}
           pagination={pagination}
           loading={loading}
           bordered

@@ -23,3 +23,6 @@ export const getCategoryInfo = params => ajax('/manage/category/info', params)
 
 // 删除指定名称的图片
 export const deleteImg = params => ajax('/manage/img/delete', params, 'POST')
+
+// 添加商品
+export const addProduct = params => ajax('/manage/product/add', params, 'POST')

@@ -1,11 +1,13 @@
 import React, { Component, createRef } from 'react'
-import { Card, Form, Input, Button, Cascader } from 'antd'
+import { Card, Form, Input, Button, Cascader, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
 import { getCategoryList } from '@api/goods'
 
 import UploadImg from '@components/UploadImg'
 import RichTextEditor from '@components/RichTextEditor'
+
+import { addProduct } from '@api/goods'
 
 const { Item } = Form
 const { TextArea } = Input
@@ -85,11 +87,19 @@ export default class AddUpdate extends Component {
     this.setState({ options })
   }
   // 提交表单
-  submit = params => {
+  submit = async params => {
+    const { name, desc, price, categoryIds } = params
+    const cloneCategoryIds = [...categoryIds]
+    if (cloneCategoryIds.length === 1) cloneCategoryIds.unshift('0')
+    const [pCategoryId, categoryId] = cloneCategoryIds 
     const { imgRef, editorRef } = this
     const imgs = imgRef.current.getImgs()
     const detail = editorRef.current.getDetail()
-    console.log(params, imgs, detail)
+    const product = { name, desc, price, pCategoryId, categoryId, imgs, detail }
+    const { status } = await addProduct(product)
+    if (status !== 0) return message.success('添加商品失败！')
+    message.success('添加商品成功！')
+    this.props.history.goBack()
   }
   render () {
     const { isUpdate, submit, validatorPrice, loadData, imgRef, editorRef } = this
@@ -157,7 +167,7 @@ export default class AddUpdate extends Component {
             <UploadImg ref={imgRef} />
           </Item>
           <Item label='商品详情' wrapperCol={{span: 20}}>
-            <RichTextEditor ref={editorRef} detail={'<h1>详情</h1>'} />
+            <RichTextEditor ref={editorRef} />
           </Item>
           <Item>
             <Button type='primary' htmlType='submit'>
