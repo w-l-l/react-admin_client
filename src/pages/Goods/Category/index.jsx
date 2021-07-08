@@ -3,6 +3,7 @@ import { Card, Button, Table, message } from 'antd'
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons'
 
 import { getCategoryList } from '@api/goods'
+import { PAGE_SIZE } from '@utils/constant'
 
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -124,7 +125,7 @@ export default class Category extends Component {
           rowKey='_id'
           bordered
           loading={loading}
-          pagination={{ defaultPageSize: 5, showQuickJumper: true }}
+          pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true }}
         >
           <Column title='分类名称' dataIndex='name'></Column>
           <Column title='操作' render={renderTableHanle} width='300px'></Column>
