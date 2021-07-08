@@ -5,17 +5,21 @@ import { getRoleList } from '@api/role'
 import { formatDate } from '@utils/date'
 import { PAGE_SIZE } from '@utils/constant'
 
+import AddModal from './AddModal'
+
 const { Column } = Table
 
 export default class Role extends Component {
   state = {
     roles: [], // 所以角色列表
     loading: false,
-    role: {} // 当前选中的角色信息
+    role: {}, // 当前选中的角色信息
+    isShowAdd: false // 是否显示创建角色弹窗
   }
   componentDidMount() {
     this.getRoleList()
   }
+  // 获取角色列表
   getRoleList = async _ => {
     try {
       this.setState({ loading: true })
@@ -26,12 +30,15 @@ export default class Role extends Component {
       message.error('角色列表获取失败')
     }
   }
+  // 控制弹窗显示
+  controlModalShow = (attr, value) => this.setState({ [attr]: value })
   render () {
-    const { roles, loading, role } = this.state
+    const { controlModalShow, getRoleList } = this
+    const { roles, loading, role, isShowAdd } = this.state
     // 卡片左上方
     const title = (
       <>
-        <Button type='primary' style={{ marginRight: 5 }}>创建角色</Button>
+        <Button type='primary' style={{ marginRight: 5 }} onClick={_ => controlModalShow('isShowAdd', true)}>创建角色</Button>
         <Button type='primary' disabled={!role._id}>设置角色权限</Button>
       </>
     )
@@ -57,6 +64,7 @@ export default class Role extends Component {
           <Column title="授权时间" dataIndex="auth_time" render={formatDate} />
           <Column title="授权人" dataIndex="auth_name" />
         </Table>
+        <AddModal isShowAdd={isShowAdd} controlModalShow={controlModalShow} getRoleList={getRoleList} />
       </Card>
     )
   }
