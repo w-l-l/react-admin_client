@@ -76,7 +76,7 @@ export default class Home extends Component {
         </Button>
         <Button
           type='link'
-          onClick={() => push('/goods/product/update', { product })}
+          onClick={() => push('/goods/product/update', product)}
         >
           修改
         </Button>

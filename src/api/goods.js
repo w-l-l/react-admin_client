@@ -26,3 +26,6 @@ export const deleteImg = params => ajax('/manage/img/delete', params, 'POST')
 
 // 添加商品
 export const addProduct = params => ajax('/manage/product/add', params, 'POST')
+
+// 修改商品
+export const updateProduct = params => ajax('/manage/product/update', params, 'POST')

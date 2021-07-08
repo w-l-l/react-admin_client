@@ -7,7 +7,7 @@ import { getCategoryList } from '@api/goods'
 import UploadImg from '@components/UploadImg'
 import RichTextEditor from '@components/RichTextEditor'
 
-import { addProduct } from '@api/goods'
+import { addProduct, updateProduct } from '@api/goods'
 
 const { Item } = Form
 const { TextArea } = Input
@@ -70,8 +70,7 @@ export default class AddUpdate extends Component {
     this.setState({ options })
   }
   // 商品价格验证规则
-  validatorPrice = (_, price) =>
-    price * 1 > 0 ? Promise.resolve() : Promise.reject('商品价格必须大于0')
+  validatorPrice = (_, price) => price * 1 > 0 ? Promise.resolve() : Promise.reject('商品价格必须大于0')
   // 动态获取分类数据
   loadData = async ([option]) => {
     option.loading = true
@@ -92,18 +91,36 @@ export default class AddUpdate extends Component {
     const cloneCategoryIds = [...categoryIds]
     if (cloneCategoryIds.length === 1) cloneCategoryIds.unshift('0')
     const [pCategoryId, categoryId] = cloneCategoryIds 
-    const { imgRef, editorRef } = this
+    const { imgRef, editorRef, isUpdate } = this
     const imgs = imgRef.current.getImgs()
     const detail = editorRef.current.getDetail()
     const product = { name, desc, price, pCategoryId, categoryId, imgs, detail }
-    const { status } = await addProduct(product)
-    if (status !== 0) return message.success('添加商品失败！')
-    message.success('添加商品成功！')
+    let msg = '添加商品', reqProduct = addProduct
+    if (isUpdate) {
+      product._id = this.product._id
+      msg = '更新商品'
+      reqProduct = updateProduct
+    }
+    const { status } = await reqProduct(product)
+    if (status !== 0) return message.success(`${msg}失败！`)
+    message.success(`${msg}成功！`)
     this.props.history.goBack()
   }
   render () {
-    const { isUpdate, submit, validatorPrice, loadData, imgRef, editorRef } = this
+    const { isUpdate, submit, validatorPrice, loadData, imgRef, editorRef, product } = this
     const { options } = this.state
+    const { name, desc, price, pCategoryId, categoryId, imgs, detail } = product
+    let initialValues = {}
+    if (isUpdate) {
+      const categoryIds = [categoryId]
+      if (pCategoryId !== '0') categoryIds.unshift(pCategoryId)
+      initialValues = {
+        name,
+        desc,
+        price: price + '',
+        categoryIds
+      }
+    }
     // 头部左侧
     const title = (
       <span>
@@ -116,7 +133,7 @@ export default class AddUpdate extends Component {
     )
     return (
       <Card title={title}>
-        <Form labelCol={{ span: 2 }} wrapperCol={{ span: 8 }} onFinish={submit}>
+        <Form labelCol={{ span: 2 }} wrapperCol={{ span: 8 }} onFinish={submit} initialValues={initialValues}>
           <Item
             label='商品名称'
             name='name'
@@ -164,10 +181,10 @@ export default class AddUpdate extends Component {
             />
           </Item>
           <Item label='商品图片'>
-            <UploadImg ref={imgRef} />
+            <UploadImg ref={imgRef} imgs={imgs} />
           </Item>
           <Item label='商品详情' wrapperCol={{span: 20}}>
-            <RichTextEditor ref={editorRef} />
+            <RichTextEditor ref={editorRef} detail={detail} />
           </Item>
           <Item>
             <Button type='primary' htmlType='submit'>
