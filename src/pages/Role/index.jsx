@@ -6,6 +6,7 @@ import { formatDate } from '@utils/date'
 import { PAGE_SIZE } from '@utils/constant'
 
 import AddModal from './AddModal'
+import AuthModal from './AuthModal'
 
 const { Column } = Table
 
@@ -14,7 +15,8 @@ export default class Role extends Component {
     roles: [], // 所以角色列表
     loading: false,
     role: {}, // 当前选中的角色信息
-    isShowAdd: false // 是否显示创建角色弹窗
+    isShowAdd: false, // 是否显示创建角色弹窗
+    isShowAuth: false // 是否显示设置角色权限弹窗
   }
   componentDidMount() {
     this.getRoleList()
@@ -34,12 +36,12 @@ export default class Role extends Component {
   controlModalShow = (attr, value) => this.setState({ [attr]: value })
   render () {
     const { controlModalShow, getRoleList } = this
-    const { roles, loading, role, isShowAdd } = this.state
+    const { roles, loading, role, isShowAdd, isShowAuth } = this.state
     // 卡片左上方
     const title = (
       <>
         <Button type='primary' style={{ marginRight: 5 }} onClick={_ => controlModalShow('isShowAdd', true)}>创建角色</Button>
-        <Button type='primary' disabled={!role._id}>设置角色权限</Button>
+        <Button type='primary' disabled={!role._id} onClick={_ => controlModalShow('isShowAuth', true)}>设置角色权限</Button>
       </>
     )
     return (
@@ -65,6 +67,7 @@ export default class Role extends Component {
           <Column title="授权人" dataIndex="auth_name" />
         </Table>
         <AddModal isShowAdd={isShowAdd} controlModalShow={controlModalShow} getRoleList={getRoleList} />
+        <AuthModal isShowAuth={isShowAuth} controlModalShow={controlModalShow} getRoleList={getRoleList} role={role} />
       </Card>
     )
   }
