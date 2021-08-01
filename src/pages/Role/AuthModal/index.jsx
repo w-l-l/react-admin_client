@@ -11,7 +11,7 @@ const { Item } = Form
 export default class AuthModal extends Component {
   static propTypes = {
     isShowAuth: PropTypes.bool.isRequired,
-    controlModalShow: PropTypes.func.isRequired,
+    controlState: PropTypes.func.isRequired,
     getRoleList: PropTypes.func.isRequired,
     role: PropTypes.object.isRequired
   }
@@ -28,24 +28,32 @@ export default class AuthModal extends Component {
       children: this.getTreeNodes(menuList)
     }]
   }
+  static getDerivedStateFromProps(props, state) {
+    const { role: { menus = [] }, isShowAuth } = props
+    const { checkedKeys } = state
+    return {
+      checkedKeys: isShowAuth ? checkedKeys : menus
+    }
+  }
   // 设置角色权限
   updateRole = async _ => {
     const { checkedKeys } = this.state
-    const { role: oldRole, getRoleList } = this.props
+    const { role: oldRole, getRoleList, controlState } = this.props
     const role = {...oldRole}
     role.menus = checkedKeys
     role.auth_time = Date.now()
     role.auth_name = memory.user.username
-    const { status } = await updateRole(role)
+    const { status, data } = await updateRole(role)
     if (status !== 0) return message.error('设置角色权限失败')
     message.success('设置角色权限成功')
+    controlState('role', data)
     this.handleCancel()
     getRoleList()
   }
   // 关闭弹窗
   handleCancel = _ => {
-    const { controlModalShow } = this.props
-    controlModalShow('isShowAuth', false)
+    const { controlState } = this.props
+    controlState('isShowAuth', false)
     this.setState({ checkedKeys: [] })
   }
   // 生成TreeNode

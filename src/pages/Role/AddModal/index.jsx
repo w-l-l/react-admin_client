@@ -9,7 +9,7 @@ const { Item } = Form
 export default class AddModal extends Component {
   static propTypes = {
     isShowAdd: PropTypes.bool.isRequired,
-    controlModalShow: PropTypes.func.isRequired,
+    controlState: PropTypes.func.isRequired,
     getRoleList: PropTypes.func.isRequired
   }
   // 表单ref
@@ -27,9 +27,9 @@ export default class AddModal extends Component {
   }
   // 关闭弹窗
   handleCancel = _ => {
-    const { controlModalShow } = this.props
+    const { controlState } = this.props
     this.addFormRef.current.resetFields()
-    controlModalShow('isShowAdd', false)
+    controlState('isShowAdd', false)
   }
   render () {
     const { addRole, handleCancel, addFormRef } = this

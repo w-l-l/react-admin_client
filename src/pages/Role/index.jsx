@@ -12,7 +12,7 @@ const { Column } = Table
 
 export default class Role extends Component {
   state = {
-    roles: [], // 所以角色列表
+    roles: [], // 所有角色列表
     loading: false,
     role: {}, // 当前选中的角色信息
     isShowAdd: false, // 是否显示创建角色弹窗
@@ -32,16 +32,16 @@ export default class Role extends Component {
       message.error('角色列表获取失败')
     }
   }
-  // 控制弹窗显示
-  controlModalShow = (attr, value) => this.setState({ [attr]: value })
+  // 控制状态
+  controlState = (attr, value) => this.setState({ [attr]: value })
   render () {
-    const { controlModalShow, getRoleList } = this
+    const { controlState, getRoleList } = this
     const { roles, loading, role, isShowAdd, isShowAuth } = this.state
     // 卡片左上方
     const title = (
       <>
-        <Button type='primary' style={{ marginRight: 5 }} onClick={_ => controlModalShow('isShowAdd', true)}>创建角色</Button>
-        <Button type='primary' disabled={!role._id} onClick={_ => controlModalShow('isShowAuth', true)}>设置角色权限</Button>
+        <Button type='primary' style={{ marginRight: 5 }} onClick={_ => controlState('isShowAdd', true)}>创建角色</Button>
+        <Button type='primary' disabled={!role._id} onClick={_ => controlState('isShowAuth', true)}>设置角色权限</Button>
       </>
     )
     return (
@@ -66,8 +66,8 @@ export default class Role extends Component {
           <Column title="授权时间" dataIndex="auth_time" render={formatDate} />
           <Column title="授权人" dataIndex="auth_name" />
         </Table>
-        <AddModal isShowAdd={isShowAdd} controlModalShow={controlModalShow} getRoleList={getRoleList} />
-        <AuthModal isShowAuth={isShowAuth} controlModalShow={controlModalShow} getRoleList={getRoleList} role={role} />
+        <AddModal isShowAdd={isShowAdd} controlState={controlState} getRoleList={getRoleList} />
+        <AuthModal isShowAuth={isShowAuth} controlState={controlState} getRoleList={getRoleList} role={role} />
       </Card>
     )
   }
