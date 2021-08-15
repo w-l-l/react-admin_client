@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Card, Button, Table, message } from 'antd'
+import { Card, Button, Table, message, Modal } from 'antd'
 
-import { getUserList } from '@api/user'
+import { getUserList, delUser } from '@api/user'
 import { formatDate } from '@utils/date'
 import { PAGE_SIZE } from '@utils/constant'
 
@@ -35,11 +35,22 @@ export default class User extends Component {
     }, {})
     this.roleNames = roleNames
   }
-  tableHandleRender = _ => {
+  delUser = ({ username, _id }) => {
+    Modal.confirm({
+      title: `确定删除${username}吗？`,
+      onOk: async _ => {
+        const { status } = await delUser({ userId: _id })
+        if (status !== 0) return
+        message.error('删除用户成功！')
+        this.getUserList()
+      }
+    })
+  }
+  tableHandleRender = user => {
     return (
       <>
         <Button type='link'>修改</Button>
-        <Button type='link'>删除</Button>
+        <Button type='link' onClick={_ => this.delUser(user)}>删除</Button>
       </>
     )
   }
