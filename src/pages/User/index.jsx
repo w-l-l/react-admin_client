@@ -1,14 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { Card, Button, Table, message, Modal } from 'antd'
 
 import { getUserList, delUser } from '@api/user'
 import { formatDate } from '@utils/date'
 import { PAGE_SIZE } from '@utils/constant'
 
+import AddUpdateModal from './AddUpdateModal'
+
 const { Column } = Table
 
 export default class User extends Component {
   roleNames = {}
+  addUpdateModalRef = createRef()
   state = {
     users: [],
     roles: [],
@@ -46,6 +49,9 @@ export default class User extends Component {
       }
     })
   }
+  showAddUpdateModal = _ => {
+    this.addUpdateModalRef.current.show()
+  }
   tableHandleRender = user => {
     return (
       <>
@@ -55,9 +61,9 @@ export default class User extends Component {
     )
   }
   render () {
-    const { roleNames, tableHandleRender } = this
-    const { users, loading } = this.state
-    const title = <Button type='primary'>创建用户</Button>
+    const { roleNames, tableHandleRender, addUpdateModalRef, showAddUpdateModal, getUserList } = this
+    const { users, loading, roles } = this.state
+    const title = <Button type='primary' onClick={showAddUpdateModal}>创建用户</Button>
     return (
       <Card title={title}>
         <Table
@@ -74,6 +80,7 @@ export default class User extends Component {
           <Column title='所属角色' dataIndex='role_id' render={role_id => roleNames[role_id]} />
           <Column title='操作' width='160px' render={tableHandleRender} />
         </Table>
+        <AddUpdateModal roles={roles} getUserList={getUserList} ref={addUpdateModalRef}/>
       </Card>
     )
   }
