@@ -49,13 +49,13 @@ export default class User extends Component {
       }
     })
   }
-  showAddUpdateModal = _ => {
-    this.addUpdateModalRef.current.show()
+  showAddUpdateModal = user => {
+    this.addUpdateModalRef.current.show(user)
   }
   tableHandleRender = user => {
     return (
       <>
-        <Button type='link'>修改</Button>
+        <Button type='link' onClick={_ => this.showAddUpdateModal(user)}>修改</Button>
         <Button type='link' onClick={_ => this.delUser(user)}>删除</Button>
       </>
     )
@@ -63,7 +63,7 @@ export default class User extends Component {
   render () {
     const { roleNames, tableHandleRender, addUpdateModalRef, showAddUpdateModal, getUserList } = this
     const { users, loading, roles } = this.state
-    const title = <Button type='primary' onClick={showAddUpdateModal}>创建用户</Button>
+    const title = <Button type='primary' onClick={_ => showAddUpdateModal()}>创建用户</Button>
     return (
       <Card title={title}>
         <Table
