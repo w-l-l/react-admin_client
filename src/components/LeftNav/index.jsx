@@ -6,6 +6,7 @@ import './less/left_nav.less'
 import logo from '@assets/img/logo.png'
 
 import menuList from '@config/menuList'
+import memory from '@utils/memory'
 
 const { SubMenu } = Menu
 
@@ -19,28 +20,42 @@ class LeftNav extends Component {
     // 获取菜单结构
     this.menuList = this.createMenuList(menuList)
   }
+  // 判断权限
+  hasAuth = item => {
+    const { key, isPublic } = item
+    const { role: { menus }, username } = memory.user
+    if (username === 'admin' || isPublic || ~menus.indexOf(key)) {
+      return true
+    } else if (item.children) {
+      return !!item.children.some(item => ~menus.indexOf(item.key))
+    }
+    return false
+  }
   // 动态创建菜单
   createMenuList = menu => {
     // 获取当前路径
     const { pathname } = this.props.location
-    return menu.map(({ title, key, icon, children }) => {
+    return menu.reduce((total, item) => {
+      if (!this.hasAuth(item)) return total
+      const { title, key, icon, children } = item
       if (children) {
         // 获取需要展开的 SubMenu 菜单项 key 数组
         const isOpenKey = children.some(item => !pathname.indexOf(item.key))
         isOpenKey && (this.defaultOpenKeys = [key])
-        return (
+        total.push((
           <SubMenu key={key} icon={icon} title={title}>
             {this.createMenuList(children)}
           </SubMenu>
-        )
+        ))
       } else {
-        return (
+        total.push((
           <Menu.Item key={key} icon={icon}>
             <Link to={key}>{title}</Link>
           </Menu.Item>
-        )
+        ))
       }
-    })
+      return total
+    }, [])
   }
   render () {
     const { defaultOpenKeys, menuList } = this
