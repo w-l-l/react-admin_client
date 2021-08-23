@@ -1,13 +1,16 @@
 import React, { Component, createRef } from 'react'
+import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Modal, Form, Input, Select, message } from 'antd'
 
 import { addUser, updateUser } from '@api/user'
+import memory from '@utils/memory'
+import { removeUser } from '@utils/localStorage'
 
 const { Item } = Form
 const { Option } = Select
 
-export default class AddUpdateModal extends Component {
+class AddUpdateModal extends Component {
   static propTypes = {
     roles: PropTypes.array.isRequired,
     getUserList: PropTypes.func.isRequired
@@ -27,6 +30,13 @@ export default class AddUpdateModal extends Component {
     if (user._id) params._id = user._id
     const { status } = await (user._id ? updateUser(params) : addUser(params))
     if (status !== 0) return
+    const { _id: userId, role_id } = memory.user
+    if (user._id && user._id === userId && params.role_id !== role_id) {
+      removeUser()
+      message.success('当前用户角色发生变更，请重新登陆')
+      this.props.history.replace('/login')
+      return
+    }
     message.success(`${user._id ? '修改' : '添加'}用户成功`)
     this.props.getUserList()
     handleCancel()
@@ -74,3 +84,5 @@ export default class AddUpdateModal extends Component {
     )
   }
 }
+
+export default withRouter(AddUpdateModal)

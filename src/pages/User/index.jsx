@@ -80,7 +80,7 @@ export default class User extends Component {
           <Column title='所属角色' dataIndex='role_id' render={role_id => roleNames[role_id]} />
           <Column title='操作' width='160px' render={tableHandleRender} />
         </Table>
-        <AddUpdateModal roles={roles} getUserList={getUserList} ref={addUpdateModalRef}/>
+        <AddUpdateModal wrappedComponentRef={addUpdateModalRef} roles={roles} getUserList={getUserList} />
       </Card>
     )
   }
