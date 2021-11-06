@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Menu } from 'antd'
+import { connect } from 'react-redux'
 
 import './less/left_nav.less'
 import logo from '@assets/img/logo.png'
 
 import menuList from '@config/menuList'
 import memory from '@utils/memory'
+import { setHeadTitle } from '@redux/actions'
 
 const { SubMenu } = Menu
 
@@ -34,7 +36,7 @@ class LeftNav extends Component {
   // 动态创建菜单
   createMenuList = menu => {
     // 获取当前路径
-    const { pathname } = this.props.location
+    const { location: { pathname }, setHeadTitle } = this.props
     return menu.reduce((total, item) => {
       if (!this.hasAuth(item)) return total
       const { title, key, icon, children } = item
@@ -48,8 +50,9 @@ class LeftNav extends Component {
           </SubMenu>
         ))
       } else {
+        if(item.key === pathname || !pathname.indexOf(item.key)) setHeadTitle(item.title)
         total.push((
-          <Menu.Item key={key} icon={icon}>
+          <Menu.Item key={key} icon={icon} onClick={_ => setHeadTitle(item.title)}>
             <Link to={key}>{title}</Link>
           </Menu.Item>
         ))
@@ -85,4 +88,7 @@ class LeftNav extends Component {
   }
 }
 
-export default withRouter(LeftNav)
+export default connect(
+  _ => ({}),
+  { setHeadTitle }
+)(withRouter(LeftNav))

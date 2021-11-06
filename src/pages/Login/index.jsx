@@ -24,7 +24,7 @@ export default class Login extends Component {
     message.success('登录成功')
     saveUser(data)
     // 登录成功跳转登录页
-    this.props.history.replace('/')
+    this.props.history.replace('/home')
   }
 
   // 用户名验证规则

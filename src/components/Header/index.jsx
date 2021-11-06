@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Button, Modal } from 'antd'
 import { GithubFilled } from '@ant-design/icons'
+import { connect } from 'react-redux'
 
 import './less/header.less'
 
 import { removeUser } from '@utils/localStorage'
 import memory from '@utils/memory'
 import { formatDate } from '@utils/date'
-import menuList from '@config/menuList'
 
 class Header extends Component {
   timer = 0 // 定时器
@@ -20,20 +20,6 @@ class Header extends Component {
   }
   componentWillUnmount () {
     clearInterval(this.timer)
-  }
-  // 获取菜单标题
-  getTitle = () => {
-    const { pathname } = this.props.location
-    let title = ''
-    menuList.forEach(item => {
-      if (item.key === pathname) title = item.title
-      const { children } = item
-      if (children) {
-        const info = children.find(item => !pathname.indexOf(item.key))
-        info && (title = info.title)
-      }
-    })
-    return title
   }
   // 获取当前时间
   getTime = () => {
@@ -57,6 +43,7 @@ class Header extends Component {
   render () {
     const { username } = memory.user || {}
     const { currentTime } = this.state
+    const { headTitle } = this.props
     return (
       <div className='header'>
         <div className='header-top'>
@@ -66,7 +53,7 @@ class Header extends Component {
           </Button>
         </div>
         <div className='header-bottom'>
-          <div className='header-bottom-left'>{this.getTitle()}</div>
+          <div className='header-bottom-left'>{headTitle}</div>
           <div className='header-bottom-right'>
             <span>{currentTime}</span>
             <a
@@ -84,4 +71,7 @@ class Header extends Component {
   }
 }
 
-export default withRouter(Header)
+export default connect(
+  state => ({ headTitle: state.headTitle }),
+  {}
+)(withRouter(Header))
