@@ -9,7 +9,7 @@ export const saveUser = user => {
 }
 
 // 读取用户信息
-export const getUser = () => JSON.parse(window.localStorage.getItem(USER_KEY))
+export const getUser = () => JSON.parse(window.localStorage.getItem(USER_KEY)) || {}
 
 // 删除用户用户信息
 export const removeUser = () => {
