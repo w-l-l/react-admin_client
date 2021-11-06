@@ -39,6 +39,7 @@ module.exports = {
           '@components': './components',
           '@config': './config',
           '@utils': './utils',
+          '@redux': './redux'
         }
       }
     }
