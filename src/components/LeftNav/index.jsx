@@ -7,7 +7,6 @@ import './less/left_nav.less'
 import logo from '@assets/img/logo.png'
 
 import menuList from '@config/menuList'
-import memory from '@utils/memory'
 import { setHeadTitle } from '@redux/actions'
 
 const { SubMenu } = Menu
@@ -25,7 +24,7 @@ class LeftNav extends Component {
   // 判断权限
   hasAuth = item => {
     const { key, isPublic } = item
-    const { role: { menus }, username } = memory.user
+    const { role: { menus }, username } = this.props.user
     if (username === 'admin' || isPublic || ~menus.indexOf(key)) {
       return true
     } else if (item.children) {
@@ -89,6 +88,6 @@ class LeftNav extends Component {
 }
 
 export default connect(
-  _ => ({}),
+  state => ({ user: state.user }),
   { setHeadTitle }
 )(withRouter(LeftNav))

@@ -6,9 +6,8 @@ import { connect } from 'react-redux'
 
 import './less/header.less'
 
-import { removeUser } from '@utils/localStorage'
-import memory from '@utils/memory'
 import { formatDate } from '@utils/date'
+import { logout } from '@redux/actions'
 
 class Header extends Component {
   timer = 0 // 定时器
@@ -34,20 +33,16 @@ class Header extends Component {
       title: '您确定退出吗？',
       okText: '确定',
       cancelText: '取消',
-      onOk: () => {
-        removeUser()
-        this.props.history.replace('/login')
-      }
+      onOk: async _ => this.props.logout()
     })
   }
   render () {
-    const { username } = memory.user || {}
     const { currentTime } = this.state
-    const { headTitle } = this.props
+    const { headTitle, user } = this.props
     return (
       <div className='header'>
         <div className='header-top'>
-          <span>欢迎，{username}</span>
+          <span>欢迎，{user.username}</span>
           <Button type='link' onClick={this.logout}>
             退出
           </Button>
@@ -72,6 +67,9 @@ class Header extends Component {
 }
 
 export default connect(
-  state => ({ headTitle: state.headTitle }),
-  {}
+  state => ({
+    headTitle: state.headTitle,
+    user: state.user
+  }),
+  { logout }
 )(withRouter(Header))

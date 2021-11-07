@@ -44,7 +44,7 @@ export default class User extends Component {
       onOk: async _ => {
         const { status } = await delUser({ userId: _id })
         if (status !== 0) return
-        message.error('删除用户成功！')
+        message.success('删除用户成功！')
         this.getUserList()
       }
     })

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Redirect, Switch, Route } from 'react-router-dom'
 import { Layout } from 'antd'
+import { connect } from 'react-redux'
 
 import './less/admin.less'
 
-import memory from '@utils/memory'
 import LeftNav from '@components/LeftNav'
 import Header from '@components/Header'
 import Home from '../Home'
@@ -19,10 +19,11 @@ import Order from '../Order'
 
 const { Footer, Sider, Content } = Layout
 
-export default class Admin extends Component {
+class Admin extends Component {
   render () {
+    const { user } = this.props
     // 如果用户未登录，直接重定向登录页
-    if (!memory.user) return <Redirect to='login' />
+    if (!user || !user._id) return <Redirect to='login' />
     return (
       <Layout className='admin'>
         <Sider>
@@ -53,3 +54,8 @@ export default class Admin extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({ user: state.user }),
+  {}
+)(Admin)

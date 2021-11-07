@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
-import { Form, Input, Button, message } from 'antd'
+import { Form, Input, Button } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { connect } from 'react-redux'
+import { login } from '@redux/actions'
 
 import './less/login.less'
 import logo from '@assets/img/logo.png'
 
-import { login } from '@api/login'
-import { saveUser } from '@utils/localStorage'
-import memory from '@utils/memory'
-
-export default class Login extends Component {
+class Login extends Component {
   // 表单默认值
   initialValues = {
     username: 'admin',
@@ -18,14 +16,7 @@ export default class Login extends Component {
   }
 
   // 验证通过提交表单
-  handleFinish = async params => {
-    const { status, data } = await login(params)
-    if (status !== 0) return
-    message.success('登录成功')
-    saveUser(data)
-    // 登录成功跳转登录页
-    this.props.history.replace('/home')
-  }
+  handleFinish = params => this.props.login(params)
 
   // 用户名验证规则
   validateUserName = [
@@ -57,8 +48,9 @@ export default class Login extends Component {
   ]
 
   render () {
+    const { user } = this.props
     // 如果用户登录，直接重定向首页
-    if (memory.user) return <Redirect to='/' />
+    if (user && user._id) return <Redirect to='/home' />
     const {
       handleFinish,
       validateUserName,
@@ -72,6 +64,7 @@ export default class Login extends Component {
           <h1>React项目: 后台管理系统</h1>
         </header>
         <section className='login-content'>
+          <div className={user.errorMsg ? 'error-msg show' : 'error-msg'}>{user.errorMsg}</div>
           <h2>用户登录</h2>
           <Form
             className='login-form'
@@ -103,3 +96,8 @@ export default class Login extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({ user: state.user }),
+  { login }
+)(Login)
