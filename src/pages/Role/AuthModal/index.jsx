@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Modal, Form, Input, Tree, message } from 'antd'
+import { connect } from 'react-redux'
 
 import { updateRole } from '@api/role'
 import menuList from '@config/menuList'
-import memory from '@utils/memory'
-import { removeUser } from '@utils/localStorage'
+import { logout } from '@redux/actions'
 
 const { Item } = Form
 
@@ -40,23 +40,18 @@ class AuthModal extends Component {
   // 设置角色权限
   updateRole = async _ => {
     const { checkedKeys } = this.state
-    const { role: oldRole, getRoleList, controlState, history } = this.props
+    const { role: oldRole, getRoleList, controlState, user, logout } = this.props
     const role = {...oldRole}
     role.menus = checkedKeys
     role.auth_time = Date.now()
-    role.auth_name = memory.user.username
+    role.auth_name = user.username
     const { status, data } = await updateRole(role)
     if (status !== 0) return message.error('设置角色权限失败')
-    if (role._id === memory.user.role_id) {
-      removeUser()
-      message.success('当前用户角色权限设置成功，请重新登陆')
-      history.replace('/login')
-    } else {
-      message.success('设置角色权限成功')
-      controlState('role', data)
-      this.handleCancel()
-      getRoleList()
-    }
+    if (role._id === user.role_id) return logout('当前用户角色权限设置成功，请重新登陆')
+    message.success('设置角色权限成功')
+    controlState('role', data)
+    this.handleCancel()
+    getRoleList()
   }
   // 关闭弹窗
   handleCancel = _ => {
@@ -99,4 +94,7 @@ class AuthModal extends Component {
   }
 }
 
-export default withRouter(AuthModal)
+export default connect(
+  state => ({ user: state.user }),
+  { logout }
+)(withRouter(AuthModal))
