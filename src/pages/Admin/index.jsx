@@ -16,6 +16,7 @@ import Bar from '../Charts/Bar'
 import Pie from '../Charts/Pie'
 import Line from '../Charts/Line'
 import Order from '../Order'
+import NotFound from '../NotFound'
 
 const { Footer, Sider, Content } = Layout
 
@@ -43,7 +44,7 @@ class Admin extends Component {
               <Route path='/charts/pie' component={Pie} />
               <Route path='/charts/line' component={Line} />
               <Route path='/order' component={Order} />
-              <Redirect to='/home' />
+              <Route component={NotFound} />
             </Switch>
           </Content>
           <Footer className='admin-footer'>

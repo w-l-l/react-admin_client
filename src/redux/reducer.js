@@ -3,7 +3,7 @@ import { SET_HEAD_TITLE, RECEIVE_USER, SHOW_ERROR_MSG, RESET_USER } from './acti
 import { getUser } from '@utils/localStorage'
 
 // 管理头部标题
-const initHeadTitle = '首页'
+const initHeadTitle = ''
 
 function headTitle(state = initHeadTitle, action) {
   switch (action.type) {
