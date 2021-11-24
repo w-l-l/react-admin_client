@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { message } from 'antd'
-
+console.log(process.env)
 // 创建axiso实例
 const service = axios.create({
-  baseURL: '/api',
+  baseURL: process.env.REACT_APP_BASE,
   timeout: 500000
 })
 
